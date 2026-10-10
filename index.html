@@ -8,18 +8,19 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Silkscreen:wght@400;700&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="icon" type="image/png" href="assets/quizzica-logo.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/quizzica-logo.png" />
+  <link rel="apple-touch-icon" href="assets/quizzica-logo.png" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <div class="ambient-pixels" aria-hidden="true"><span class="wind-leaf leaf-one">◆</span><span class="wind-leaf leaf-two">◆</span><span class="wind-leaf leaf-three">◆</span><span class="wind-leaf leaf-four">◆</span><span class="wind-leaf leaf-five">◆</span><span class="pixel-firefly firefly-one">▪</span><span class="pixel-firefly firefly-two">▪</span><span class="pixel-firefly firefly-three">▪</span></div>
   <div class="page-shell">
     <header class="topbar">
-      <a class="brand" href="#home" aria-label="Quizzica home"><img class="brand-logo" src="assets/quizzica-logo.png" alt="" /><span class="brand-name">Quizzica</span><span class="brand-sparkle sparkle-one">✦</span><span class="brand-sparkle sparkle-two">✧</span><span class="brand-tagline">Quiz&nbsp; • &nbsp;Play&nbsp; • &nbsp;Connect</span></a>
+      <a class="brand" href="#home" aria-label="Quizzica home"><span class="brand-star">✦</span><span class="brand-name">Quizzica</span><span class="brand-sparkle sparkle-one">✦</span><span class="brand-sparkle sparkle-two">✧</span><span class="brand-tagline">Quiz&nbsp; • &nbsp;Play&nbsp; • &nbsp;Connect</span></a>
       <nav class="top-nav" aria-label="Main navigation"><a class="top-link active" href="#home">Home</a><a class="top-link" href="#create" id="navCreate">Create</a><a class="top-link" href="#join">Join</a><a class="top-link" href="#profile" id="navProfile">Profile</a><button class="settings-button" id="settingsButton" aria-label="Settings" title="Settings">⚙</button></nav>
     </header>
     <main id="home" class="main-layout">
-      <aside class="side-nav" aria-label="Sidebar navigation"><a class="side-link selected" href="#home"><span>◆</span>Home</a><a class="side-link" href="#quizzes" id="navQuizzes"><span>🏆</span>Quizzes</a><a class="side-link" href="#profile" id="sideProfile"><span>♟</span>Profile</a><a class="side-link" href="#help" id="navHelp"><span>▣</span>Help</a></aside>
+      <aside class="side-nav" aria-label="Sidebar navigation"><a class="side-link selected" href="#home"><span>◆</span>Home</a><a class="side-link" href="#quizzes" id="navQuizzes"><span>🏆</span>Quizzes</a><a class="side-link" href="#profile" id="sideProfile"><span>♟</span>Profile</a><a class="side-link" href="#help" id="navHelp"><span>▣</span>Help</a><div class="sidebar-brand-mark" aria-label="Quizzica logo"><img src="assets/quizzica-logo.png" alt="Quizzica logo" /></div></aside>
       <section class="action-column" aria-label="Game actions">
         <section class="panel join-panel" id="join"><h1>Join a Game</h1><p>Enter a game PIN to join<br class="desktop-break"> your friends!</p><form id="joinForm" class="join-form"><label class="sr-only" for="pinInput">Game PIN</label><input id="pinInput" name="pin" inputmode="numeric" autocomplete="one-time-code" maxlength="8" placeholder="Enter PIN..." required /><button class="button join-button" type="submit">Join</button></form><p class="form-message" id="joinMessage" role="status"></p></section>
         <section class="panel create-panel" id="create"><h2>Create a Game</h2><p>Host your own quiz and<br class="desktop-break"> share the PIN with your friends!</p><button class="button create-button" id="createButton" type="button">Create</button></section>

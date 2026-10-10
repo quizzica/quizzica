@@ -18,10 +18,10 @@ body::after { content:""; position:fixed; inset:0; z-index:-1; pointer-events:no
 @keyframes starDrift { from { background-position:0 0,18px 13px; } to { background-position:124px 116px,-116px -91px; } }
 .page-shell { width:min(1120px, 100%); min-height:100vh; margin:auto; padding:14px 18px 22px; }
 .topbar { height:67px; display:flex; align-items:center; justify-content:space-between; gap:20px; margin-bottom:12px; }
-.brand { position:relative; display:flex; align-items:center; gap:9px; text-decoration:none; color:white; min-width:220px; padding-left:0; }\n.brand-logo { width:48px; height:48px; object-fit:contain; image-rendering:pixelated; filter:drop-shadow(0 0 8px rgba(122,54,255,.55)); }
+.brand { position:relative; display:flex; align-items:center; text-decoration:none; color:white; min-width:220px; padding-left:22px; }
 .brand-name { font-size:clamp(27px,3.5vw,43px); font-weight:900; letter-spacing:-1.5px; line-height:1; text-shadow:2px 2px 0 #3622a1, 0 0 13px #7545ff; }
-.brand-star { display:none; }
-.brand-tagline { position:absolute; top:42px; left:57px; color:#e0d4ff; font-size:11px; letter-spacing:.15px; white-space:nowrap; }
+.brand-star { color:#ffb65e; font-size:34px; position:absolute; left:0; top:-7px; text-shadow:0 0 10px #ff8d39; }
+.brand-tagline { position:absolute; top:42px; left:29px; color:#e0d4ff; font-size:11px; letter-spacing:.15px; white-space:nowrap; }
 .brand-sparkle { position:absolute; color:#ffb44f; text-shadow:0 0 9px #ff8d39; }
 .sparkle-one { top:-4px; right:-13px; font-size:17px; }.sparkle-two { top:20px; right:-28px; font-size:13px; }
 .top-nav { height:39px; display:flex; align-items:center; gap:4px; padding:4px; border:1px solid #843aff; border-radius:13px; background:rgba(10,5,40,.88); box-shadow:0 0 0 1px rgba(136,54,255,.18), inset 0 0 14px rgba(100,38,255,.13); }
@@ -350,4 +350,9 @@ textarea.full-input { resize:vertical; min-height:64px; }
 .popup-join-form { margin-top:14px; }
 .popup-join-form input { min-width:0; flex:1; }
 .chat-form button:disabled { opacity:.6; cursor:wait; }
-\n@media (max-width:600px) { .brand-logo { width:38px; height:38px; } .brand-tagline { left:46px; top:37px; } .brand-name { font-size:clamp(23px,6vw,32px); } }\n
+
+
+/* Small Quizzica logo tucked beneath Help in the sidebar. */
+.sidebar-brand-mark { display:flex; justify-content:center; align-items:center; padding:5px 0 2px; margin-top:2px; opacity:.92; }
+.sidebar-brand-mark img { display:block; width:27px; height:27px; object-fit:contain; image-rendering:pixelated; filter:drop-shadow(0 0 5px rgba(125,55,255,.55)); }
+@media (max-width:650px) { .sidebar-brand-mark img { width:23px; height:23px; } }
