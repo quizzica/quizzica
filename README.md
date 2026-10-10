@@ -1,6 +1,6 @@
-# Samica — Pixel Quiz
+# Quizzica — Pixel Quiz
 
-A purple pixel-art quiz game with the Samica lobby, avatar sprites, quiz editor, live question screen, reactions, countdown, vote counts, and scoreboard.
+A purple pixel-art quiz game with the Quizzica lobby, avatar sprites, quiz editor, live question screen, reactions, countdown, vote counts, and scoreboard.
 
 ## Firebase project reused
 

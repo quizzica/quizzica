@@ -344,3 +344,9 @@ textarea.full-input { resize:vertical; min-height:64px; }
 @media (prefers-reduced-motion: no-preference) {
   .streak-chip.streak-active .flame { animation: pixelFlameHot .32s steps(2,end) infinite alternate; }
 }
+
+/* Small creator credit requested for the Quizzica rebrand */
+.site-credit { position:fixed; left:10px; bottom:7px; z-index:5; color:#9a83c9; opacity:.78; font:7px 'Silkscreen',monospace; letter-spacing:.4px; pointer-events:none; text-transform:lowercase; }
+.popup-join-form { margin-top:14px; }
+.popup-join-form input { min-width:0; flex:1; }
+.chat-form button:disabled { opacity:.6; cursor:wait; }
