@@ -200,3 +200,46 @@ textarea.full-input { resize:vertical; min-height:64px; }
 @keyframes pulseDot { 50% { opacity:.35; } }
 @media(max-width:600px) { .avatar-grid { grid-template-columns:repeat(6,minmax(0,1fr)); gap:5px; }.lobby-columns { grid-template-columns:1fr; }.lobby-roster { order:0; }.lobby-chat { order:1; }.roster-list { max-height:145px; }.chat-messages { height:130px; }.editor-actions { flex-direction:column; }.choice-editor,.host-answer-grid,.player-answer-grid { grid-template-columns:1fr; }.app-dialog { padding:19px 14px; }.lobby-footer { flex-wrap:wrap; }.pin-badge { padding:6px; }.pin-badge strong { font-size:13px; } }
 @media(prefers-reduced-motion:reduce){.pulse-dot{animation:none}}
+
+/* Pixel-art avatar sprites and a custom pixel scrollbar */
+.avatar-sprite { display:block; width:100%; height:100%; object-fit:contain; image-rendering:pixelated; }
+.big-avatar { overflow:hidden; padding:2px; }
+.big-avatar .avatar-sprite { width:100%; height:100%; }
+.avatar-option { padding:0; overflow:hidden; image-rendering:pixelated; }
+.avatar-option span { display:block; width:100%; height:100%; font-size:0; }
+.avatar-option .avatar-sprite { width:100%; height:100%; object-fit:cover; image-rendering:pixelated; }
+.mini-avatar { overflow:hidden; padding:1px; }
+.mini-avatar .avatar-sprite { width:100%; height:100%; object-fit:cover; image-rendering:pixelated; }
+.chat-avatar-sprite { width:27px; height:27px; flex:0 0 27px; object-fit:cover; border:1px solid #6840ad; image-rendering:pixelated; }
+/* Avoid the bright native scrollbar seen in the quiz editor on narrow screens. */
+.app-dialog, .roster-list, .chat-messages {
+  scrollbar-width: thin;
+  scrollbar-color: #8b4bff #10072d;
+  scrollbar-gutter: stable;
+}
+.app-dialog::-webkit-scrollbar, .roster-list::-webkit-scrollbar, .chat-messages::-webkit-scrollbar { width:12px; }
+.app-dialog::-webkit-scrollbar-track, .roster-list::-webkit-scrollbar-track, .chat-messages::-webkit-scrollbar-track {
+  background:#10072d; border-left:2px solid #35156d;
+}
+.app-dialog::-webkit-scrollbar-thumb, .roster-list::-webkit-scrollbar-thumb, .chat-messages::-webkit-scrollbar-thumb {
+  background:#7b35e9; border:2px solid #c18aff; border-radius:0; box-shadow:inset 0 0 0 2px #4c1aa4;
+}
+.app-dialog::-webkit-scrollbar-thumb:hover, .roster-list::-webkit-scrollbar-thumb:hover, .chat-messages::-webkit-scrollbar-thumb:hover { background:#a05aff; }
+.app-dialog { box-sizing:border-box; width:min(760px, calc(100vw - 24px)); max-width:calc(100vw - 24px); max-height:calc(100dvh - 24px); margin:auto; overscroll-behavior:contain; }
+.app-dialog:not(.wide-dialog) { width:min(440px,calc(100vw - 24px)); max-width:calc(100vw - 24px); }
+#dialogContent { min-width:0; overflow-wrap:anywhere; }
+.full-input { box-sizing:border-box; min-width:0; }
+.question-editor, .lobby-roster, .lobby-chat { min-width:0; }
+@media(max-width:420px) {
+  .app-dialog { padding:14px 12px; }
+  .avatar-grid { grid-template-columns:repeat(4,minmax(0,1fr)); gap:6px; }
+  .lobby-topline { align-items:flex-start; }
+  .pin-badge { max-width:100%; flex-wrap:wrap; }
+  .question-heading { align-items:flex-start; }
+  .question-heading strong { font-size:8px; }
+  .choice-editor { grid-template-columns:minmax(0,1fr); }
+  .editor-actions { flex-direction:column; }
+  .editor-actions button, .primary-action { min-width:0; width:100%; }
+  .profile-preview { padding:8px; }
+  .big-avatar { flex:0 0 56px; width:56px; height:56px; }
+}
