@@ -335,3 +335,12 @@ textarea.full-input { resize:vertical; min-height:64px; }
   65% { transform:scale(.98); }
   100% { transform:scale(1); }
 }
+
+/* Keep answer feedback clear without exposing vote totals before reveal. */
+.stats-hidden { padding:8px 6px; border:1px dashed #7040b5; background:rgba(18,7,48,.72); line-height:1.5; }
+.hidden-votes { opacity:.62; }
+.hidden-votes .vote-stat>b { color:#a58acb; }
+.live-answer .selected-mark { display:inline-block; padding:3px 5px; border:1px solid #ffe38b; color:#ffe38b; background:#24123f; font:700 7px 'Silkscreen',monospace; white-space:nowrap; }
+@media (prefers-reduced-motion: no-preference) {
+  .streak-chip.streak-active .flame { animation: pixelFlameHot .32s steps(2,end) infinite alternate; }
+}
