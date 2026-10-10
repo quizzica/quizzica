@@ -1,52 +1,67 @@
-const dialog = document.getElementById("noticeDialog");
-const dialogTitle = document.getElementById("dialogTitle");
-const dialogText = document.getElementById("dialogText");
-const toast = document.getElementById("toast");
-
-function showDialog(title, message) {
-  dialogTitle.textContent = title;
-  dialogText.textContent = message;
-  if (typeof dialog.showModal === "function") dialog.showModal();
-  else window.alert(`${title}\n\n${message}`);
-}
-document.getElementById("closeDialog").addEventListener("click", () => dialog.close());
-document.getElementById("dialogOk").addEventListener("click", () => dialog.close());
-
-document.getElementById("joinForm").addEventListener("submit", (event) => {
-  event.preventDefault();
-  const pin = document.getElementById("pinInput").value.trim();
-  const message = document.getElementById("joinMessage");
-  if (!/^[0-9]{4,8}$/.test(pin)) {
-    message.textContent = "Please enter a game PIN with 4–8 digits.";
-    document.getElementById("pinInput").focus();
-    return;
-  }
-  message.textContent = "";
-  showDialog("Ready to join?", `You entered game PIN ${pin}. Connect this form to your game backend to join a live room.`);
-});
-document.getElementById("pinInput").addEventListener("input", (event) => {
-  event.target.value = event.target.value.replace(/\D/g, "").slice(0, 8);
-  document.getElementById("joinMessage").textContent = "";
-});
-document.getElementById("createButton").addEventListener("click", () => {
-  showDialog("Create a Game", "Your quiz creation flow can be connected here. This clean starter is ready for your questions, quiz editor, and live game logic.");
-});
-document.getElementById("settingsButton").addEventListener("click", () => {
-  showDialog("Settings", "Settings for your Samica experience will live here.");
-});
-
-document.querySelectorAll(".top-link, .side-link").forEach((link) => {
-  link.addEventListener("click", () => {
-    if (link.hash && link.hash !== "#home" && !document.querySelector(link.hash)) {
-      showDialog(link.textContent.trim(), "This page is ready to be added as the next step of your Samica website.");
-    }
-    if (link.classList.contains("top-link")) {
-      document.querySelectorAll(".top-link").forEach((item) => item.classList.remove("active"));
-      link.classList.add("active");
-    }
-    if (link.classList.contains("side-link")) {
-      document.querySelectorAll(".side-link").forEach((item) => item.classList.remove("selected"));
-      link.classList.add("selected");
-    }
-  });
-});
+(() => {
+  const $ = (s, root=document) => root.querySelector(s);
+  const dialog = $('#appDialog'), dialogContent = $('#dialogContent'), toast = $('#toast');
+  const STORE = 'samica-live-game-v2';
+  const AVATARS = [
+    ['🧙🏻‍♀️','Mage'],['🧑🏻‍🚀','Astronaut'],['👩🏻‍🎤','Pop star'],['🧝🏻‍♀️','Elf'],['🧚🏻‍♀️','Fairy'],['🧑🏽‍🎨','Artist'],
+    ['🦊','Fox'],['🐱','Cat'],['🐼','Panda'],['🐸','Frog'],['🐻','Bear'],['🐰','Bunny'],
+    ['🐺','Wolf'],['🐯','Tiger'],['🐨','Koala'],['🐵','Monkey'],['🐧','Penguin'],['🐲','Dragon']
+  ];
+  const COLORS = ['#7438e8','#b538d4','#e45d9e','#298bd7','#3bba9b','#e49a38'];
+  let game = null, role = null, playerId = null, selectedAvatar = 0, currentProfile = {name:'Player',avatar:0}, syncTimer = null;
+  const makeId = () => Math.random().toString(36).slice(2,10);
+  const makePin = () => String(Math.floor(100000 + Math.random()*900000));
+  const esc = (s='') => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const avatar = (index) => AVATARS[(Number(index)||0) % AVATARS.length];
+  const loadGame = () => { try { return JSON.parse(localStorage.getItem(STORE) || 'null'); } catch { return null; } };
+  const saveGame = () => { if(game) { game.updatedAt = Date.now(); localStorage.setItem(STORE, JSON.stringify(game)); } };
+  const toastMsg = (msg) => { toast.textContent=msg; toast.classList.add('show'); clearTimeout(toast._t); toast._t=setTimeout(()=>toast.classList.remove('show'),2600); };
+  const open = (html, wide=true) => { dialogContent.innerHTML=html; dialog.classList.toggle('wide-dialog',wide); if(!dialog.open) dialog.showModal(); };
+  const close = () => { if(dialog.open) dialog.close(); };
+  const profileForm = (title, description, defaultName, defaultAvatar, onDone) => {
+    selectedAvatar = Number(defaultAvatar)||0;
+    open(`<button class="dialog-close" data-close aria-label="Close">×</button><div class="pixel-kicker">✦ PLAYER SETUP ✦</div><h2>${title}</h2><p class="dialog-subtitle">${description}</p><div class="profile-preview"><div class="big-avatar" id="avatarPreview">${avatar(selectedAvatar)[0]}</div><div><strong id="avatarName">${avatar(selectedAvatar)[1]}</strong><small>Choose your character</small></div></div><label class="field-label" for="profileName">Your display name</label><input class="full-input" id="profileName" maxlength="18" placeholder="Type your name..." value="${esc(defaultName)}" autocomplete="nickname"><div class="avatar-grid" id="avatarGrid">${AVATARS.map((a,i)=>`<button type="button" class="avatar-option ${i===selectedAvatar?'picked':''}" data-avatar="${i}" aria-label="${a[1]}" title="${a[1]}" style="--avatar-tint:${COLORS[i%COLORS.length]}"><span>${a[0]}</span></button>`).join('')}</div><p class="inline-error" id="profileError"></p><button class="button primary-action" id="profileContinue">Continue →</button>`,true);
+    $('#avatarGrid').addEventListener('click', e=>{const b=e.target.closest('[data-avatar]');if(!b)return;selectedAvatar=Number(b.dataset.avatar);$('#avatarGrid').querySelectorAll('.avatar-option').forEach(x=>x.classList.toggle('picked',x===b));$('#avatarPreview').textContent=avatar(selectedAvatar)[0];$('#avatarName').textContent=avatar(selectedAvatar)[1];});
+    $('#profileContinue').addEventListener('click',()=>{const name=$('#profileName').value.trim();if(!name){$('#profileError').textContent='Please enter a name first.';return;}if(name.length>18){$('#profileError').textContent='Keep your name to 18 characters.';return;}onDone({name,avatar:selectedAvatar});});
+    $('#profileName').addEventListener('keydown',e=>{if(e.key==='Enter')$('#profileContinue').click();});
+  };
+  const questionEditor = () => {
+    const questions = [{id:makeId(),text:'What is the capital of the Philippines?',options:['Manila','Cebu City','Davao City','Baguio'],correct:0}];
+    open(`<button class="dialog-close" data-close aria-label="Close">×</button><div class="pixel-kicker">✦ QUIZ WORKSHOP ✦</div><h2>Create your quiz</h2><p class="dialog-subtitle">Build your questions, choose the right answers, then open your lobby.</p><div class="editor-meta"><label class="field-label" for="quizTitle">Quiz title</label><input class="full-input" id="quizTitle" maxlength="70" value="My Pixel Quiz" placeholder="Give your quiz a title"></div><div id="questionList"></div><div class="editor-actions"><button class="button secondary-action" id="addQuestion">＋ Add question</button><button class="button primary-action" id="finishQuiz">Save quiz & create lobby →</button></div><p class="inline-error" id="editorError"></p>`,true);
+    const renderQuestions=()=>{$('#questionList').innerHTML=questions.map((q,idx)=>`<section class="question-editor" data-q="${q.id}"><div class="question-heading"><strong>QUESTION ${String(idx+1).padStart(2,'0')}</strong><button class="remove-question" type="button" data-remove="${q.id}" ${questions.length===1?'disabled':''}>✕ Remove</button></div><label class="sr-only" for="qt-${q.id}">Question ${idx+1}</label><textarea id="qt-${q.id}" class="full-input question-text" maxlength="240" placeholder="Type your question...">${esc(q.text)}</textarea><div class="choice-editor">${q.options.map((opt,j)=>`<label class="choice-edit"><input type="radio" name="correct-${q.id}" value="${j}" ${q.correct===j?'checked':''} aria-label="Mark option ${j+1} correct"><input class="full-input option-input" data-option="${j}" value="${esc(opt)}" maxlength="100" placeholder="Answer ${j+1}"></label>`).join('')}</div><small class="helper-text">Select the circle beside the correct answer.</small></section>`).join('');
+      $('#questionList').querySelectorAll('[data-remove]').forEach(b=>b.addEventListener('click',()=>{const i=questions.findIndex(q=>q.id===b.dataset.remove);if(i>=0&&questions.length>1){questions.splice(i,1);renderQuestions();}}));
+    };
+    renderQuestions();
+    $('#addQuestion').addEventListener('click',()=>{if(questions.length>=30){toastMsg('You can add up to 30 questions.');return;}questions.push({id:makeId(),text:'',options:['','','',''],correct:0});renderQuestions();$('#questionList .question-editor:last-child').scrollIntoView({behavior:'smooth',block:'nearest'});});
+    $('#finishQuiz').addEventListener('click',()=>{
+      const title=$('#quizTitle').value.trim();
+      const built=questions.map(q=>{const el=$(`[data-q="${q.id}"]`);return {text:el.querySelector('.question-text').value.trim(),options:[...el.querySelectorAll('.option-input')].map(x=>x.value.trim()),correct:Number(el.querySelector('input[type="radio"]:checked')?.value??0)};});
+      const bad=built.findIndex(q=>!q.text||q.options.some(o=>!o));if(!title||bad>=0){$('#editorError').textContent=!title?'Please give your quiz a title.':`Complete the question and all four answers for question ${bad+1}.`;return;}
+      const quiz={title,questions:built};close();profileForm('Choose your host avatar','Pick a character and the name players will see.','Host',0,profile=>{role='host';playerId=makeId();game={pin:makePin(),title:quiz.title,questions:quiz.questions,host:{id:playerId,...profile},players:[],status:'lobby',questionIndex:0,answers:{},messages:[],createdAt:Date.now()};saveGame();showLobby();});
+    });
+  };
+  const lobbyMarkup = (isHost) => `<div class="lobby-topline"><div class="pixel-kicker">✦ SAMICA GAME ROOM ✦</div><div class="pin-badge">GAME PIN <strong>${game.pin}</strong><button id="copyPin" title="Copy PIN">▣</button></div></div><h2>${esc(game.title)}</h2><p class="dialog-subtitle">${isHost?'Your lobby is open! Share this PIN with your friends.':'You made it! Wait for the host to start.'}</p><div class="lobby-columns"><section class="lobby-roster"><div class="section-label">PLAYERS <span id="playerCount">${game.players.length+(isHost?1:0)}</span></div><div id="rosterList" class="roster-list"></div><div class="waiting-note"><span class="pulse-dot"></span><span id="waitingText">Waiting for players...</span></div></section><section class="lobby-chat"><div class="section-label">LOBBY CHAT</div><div id="chatMessages" class="chat-messages"></div><form id="chatForm" class="chat-form"><input id="chatInput" maxlength="120" placeholder="Say something nice..." aria-label="Chat message"><button class="button" type="submit">Send</button></form><div class="reaction-row"><span>Quick reactions</span>${['💜','✨','🎉','👋','🔥'].map(x=>`<button type="button" data-reaction="${x}">${x}</button>`).join('')}</div></section></div><div class="lobby-footer">${isHost?'<button class="button secondary-action" id="endLobby">Cancel game</button><button class="button primary-action" id="startGame">▶ Start game</button>':'<button class="button secondary-action" id="leaveLobby">Leave lobby</button><span class="waiting-label">✦ Waiting for host ✦</span>'}</div>`;
+  const showLobby=()=>{if(!game)return;const isHost=role==='host';open(`<button class="dialog-close" data-close aria-label="Close">×</button>${lobbyMarkup(isHost)}`,true);renderLobby();$('#copyPin').addEventListener('click',async()=>{try{await navigator.clipboard.writeText(game.pin);toastMsg('Game PIN copied!');}catch{toastMsg(`Game PIN: ${game.pin}`);}});$('#chatForm').addEventListener('submit',e=>{e.preventDefault();const text=$('#chatInput').value.trim();if(!text)return;game.messages.push({id:makeId(),name:currentProfile.name,avatar:currentProfile.avatar,text,role,at:Date.now()});game.messages=game.messages.slice(-60);saveGame();$('#chatInput').value='';renderLobby();});dialogContent.querySelectorAll('[data-reaction]').forEach(b=>b.addEventListener('click',()=>{game.messages.push({id:makeId(),name:currentProfile.name,avatar:currentProfile.avatar,text:b.dataset.reaction,role,reaction:true,at:Date.now()});game.messages=game.messages.slice(-60);saveGame();renderLobby();}));if(isHost)$('#startGame').addEventListener('click',startGame);else $('#leaveLobby').addEventListener('click',leaveLobby);if(isHost)$('#endLobby').addEventListener('click',()=>{if(confirm('Cancel this game for everyone?')){game.status='ended';saveGame();close();toastMsg('Game cancelled.');}});};
+  const renderLobby=()=>{if(!game||!$('#rosterList'))return;const people=[...(game.host?[{...game.host,role:'host'}]:[]),...game.players];$('#playerCount').textContent=people.length;$('#rosterList').innerHTML=people.map(p=>`<div class="roster-person"><span class="mini-avatar" style="--avatar-tint:${COLORS[p.avatar%COLORS.length]}">${avatar(p.avatar)[0]}</span><span class="roster-name">${esc(p.name)}${p.role==='host'?' <small>HOST</small>':''}</span><span class="online-dot"></span></div>`).join('');$('#waitingText').textContent=game.players.length?'Everyone is getting ready!':'Waiting for players...';$('#chatMessages').innerHTML=game.messages.map(m=>`<div class="chat-line ${m.role==='host'?'host-chat':''}"><span>${avatar(m.avatar)[0]}</span><div><strong>${esc(m.name)}</strong><p>${esc(m.text)}</p></div></div>`).join('');$('#chatMessages').scrollTop=$('#chatMessages').scrollHeight;};
+  const startGame=()=>{if(!game.questions.length){toastMsg('Add at least one question first.');return;}game.status='playing';game.questionIndex=0;game.answers={};saveGame();showQuestion();};
+  const showQuestion=()=>{if(!game)return;if(game.status==='finished'){showResults();return;}const q=game.questions[game.questionIndex];if(!q)return;const isHost=role==='host';const total=game.questions.length;open(`<button class="dialog-close" data-close aria-label="Close">×</button><div class="game-header"><span class="pixel-kicker">✦ QUESTION ${game.questionIndex+1} / ${total} ✦</span><span class="pin-badge">PIN ${game.pin}</span></div><div class="progress-track"><span style="width:${(game.questionIndex/total)*100}%"></span></div><h2 class="live-question">${esc(q.text)}</h2>${isHost?`<p class="dialog-subtitle">Players answer on their own screen. Check the response count below.</p><div class="answer-count" id="answerCount">${Object.keys(game.answers[game.questionIndex]||{}).length} / ${game.players.length} players answered</div><div class="host-answer-grid">${q.options.map((o,i)=>`<div class="answer-tile tile-${i}"><span>${['A','B','C','D'][i]}</span>${esc(o)}</div>`).join('')}</div><div class="lobby-footer"><button class="button secondary-action" id="backLobby">Lobby</button><button class="button primary-action" id="nextQuestion">${game.questionIndex===total-1?'Finish game':'Next question →'}</button></div>`:`<p class="dialog-subtitle">Choose your answer before the host moves on!</p><div class="player-answer-grid">${q.options.map((o,i)=>`<button class="answer-tile tile-${i}" data-answer="${i}" ${game.answers[game.questionIndex]?.[playerId]?'disabled':''}><span>${['A','B','C','D'][i]}</span>${esc(o)}</button>`).join('')}</div><p class="answer-feedback" id="answerFeedback">${game.answers[game.questionIndex]?.[playerId]?'Answer submitted! Waiting for the host...':''}</p><div class="lobby-footer"><span class="waiting-label">✦ Good luck! ✦</span><button class="button secondary-action" id="gameChat">Lobby chat</button></div>`}`,true);
+    if(isHost){$('#backLobby').addEventListener('click',showLobby);$('#nextQuestion').addEventListener('click',()=>{if(game.questionIndex<game.questions.length-1){game.questionIndex++;saveGame();showQuestion();}else{game.status='finished';saveGame();showResults();}});}else{dialogContent.querySelectorAll('[data-answer]').forEach(b=>b.addEventListener('click',()=>{game=loadGame()||game;const qi=game.questionIndex;game.answers[qi]=game.answers[qi]||{};if(game.answers[qi][playerId])return;game.answers[qi][playerId]={choice:Number(b.dataset.answer),correct:Number(b.dataset.answer)===game.questions[qi].correct,at:Date.now()};saveGame();dialogContent.querySelectorAll('[data-answer]').forEach(x=>x.disabled=true);b.classList.add('answer-selected');$('#answerFeedback').textContent='Answer locked in! Waiting for the host...';}));$('#gameChat').addEventListener('click',showLobby);}
+  };
+  const showResults=()=>{const people=[...(game.host?[{...game.host,role:'host'}]:[]),...game.players];const scores=people.map(p=>({...p,score:game.questions.reduce((n,q,i)=>n+(game.answers[i]?.[p.id]?.correct?1:0),0)})).sort((a,b)=>b.score-a.score);open(`<button class="dialog-close" data-close aria-label="Close">×</button><div class="pixel-kicker">✦ QUEST COMPLETE ✦</div><h2>Quiz results</h2><p class="dialog-subtitle">${esc(game.title)} · ${game.questions.length} questions</p><div class="scoreboard">${scores.map((p,i)=>`<div class="score-row"><span class="score-rank">${['🥇','🥈','🥉'][i]||`#${i+1}`}</span><span class="mini-avatar">${avatar(p.avatar)[0]}</span><strong>${esc(p.name)}${p.role==='host'?' (Host)':''}</strong><span class="score-points">${p.score} / ${game.questions.length}</span></div>`).join('')}</div><div class="lobby-footer"><button class="button secondary-action" id="closeResults">Close</button>${role==='host'?'<button class="button primary-action" id="newGame">Host another game ↻</button>':''}</div>`,true);$('#closeResults').addEventListener('click',()=>{close();game=null;role=null;});if(role==='host')$('#newGame').addEventListener('click',()=>{close();questionEditor();});};
+  const leaveLobby=()=>{if(game&&role==='player'){game.players=game.players.filter(p=>p.id!==playerId);saveGame();}close();game=null;role=null;playerId=null;toastMsg('You left the game.');};
+  $('#joinForm').addEventListener('submit',e=>{e.preventDefault();const pin=$('#pinInput').value.trim();if(!/^\d{4,8}$/.test(pin)){$('#joinMessage').textContent='Enter a PIN with 4–8 digits.';return;}const found=loadGame();if(!found||found.pin!==pin||found.status==='ended'||found.status==='finished'){$('#joinMessage').textContent='We could not find an open game with that PIN.';return;}if(found.status==='playing'){$('#joinMessage').textContent='This game has already started.';return;}game=found;close();profileForm('Choose your avatar','Pick a character and the name your friends will see.','',0,profile=>{currentProfile=profile;role='player';playerId=makeId();game=loadGame();if(!game||game.pin!==pin||game.status!=='lobby'){toastMsg('This lobby is no longer open.');close();return;}if(game.players.some(p=>p.name.toLowerCase()===profile.name.toLowerCase())){toastMsg('That name is already in the lobby. Try another.');return;}game.players.push({id:playerId,...profile,joinedAt:Date.now()});saveGame();showLobby();});});
+  $('#pinInput').addEventListener('input',e=>{e.target.value=e.target.value.replace(/\D/g,'').slice(0,8);$('#joinMessage').textContent='';});
+  $('#createButton').addEventListener('click',questionEditor);
+  $('#navCreate').addEventListener('click',e=>{e.preventDefault();questionEditor();});
+  $('#navProfile').addEventListener('click',e=>{e.preventDefault();profileForm('Your player profile','Set the avatar and display name you want to use. ',currentProfile.name,currentProfile.avatar,p=>{currentProfile=p;toastMsg(`Profile updated: ${p.name}`);close();});});
+  $('#sideProfile').addEventListener('click',e=>{e.preventDefault();$('#navProfile').click();});
+  $('#navQuizzes').addEventListener('click',e=>{e.preventDefault();open(`<button class="dialog-close" data-close>×</button><div class="pixel-kicker">✦ QUIZ LIBRARY ✦</div><h2>My Quizzes</h2><p class="dialog-subtitle">Create a new quiz to start building your library.</p><button class="button primary-action" id="libraryCreate">＋ Create a quiz</button>`,false);$('#libraryCreate').addEventListener('click',questionEditor);});
+  $('#navHelp').addEventListener('click',e=>{e.preventDefault();open(`<button class="dialog-close" data-close>×</button><div class="pixel-kicker">✦ HOW TO PLAY ✦</div><h2>Welcome to Samica!</h2><div class="help-copy"><p><b>Host:</b> Select Create, write your questions and answers, choose your avatar, then share the six-digit PIN.</p><p><b>Players:</b> Enter the PIN, pick your character and name, then hang out in the lobby until the host starts.</p><p><b>In the lobby:</b> Chat with the group or send a quick reaction.</p><p><b>Note:</b> This starter syncs tabs/windows in the same browser using local storage. For friends joining from other devices, connect a realtime backend such as Firebase or Supabase.</p></div>`,true);});
+  $('#settingsButton').addEventListener('click',()=>open(`<button class="dialog-close" data-close>×</button><div class="pixel-kicker">✦ SETTINGS ✦</div><h2>Game settings</h2><p class="dialog-subtitle">The pixel forest is always on. Reduced-motion preferences are respected.</p><button class="button secondary-action" id="resetLocal">Reset local demo game</button>`,false));
+  dialog.addEventListener('click',e=>{if(e.target===dialog)close();const b=e.target.closest('[data-close]');if(b)close();});
+  window.addEventListener('storage',e=>{if(e.key!==STORE)return;const latest=loadGame();if(!latest)return;game=latest;if(!dialog.open)return;if(game.status==='playing'&&role==='player'){showQuestion();return;}if(game.status==='finished'){showResults();return;}if(game.status==='lobby'&&$('#rosterList'))renderLobby();if(game.status==='ended'){close();toastMsg('The host ended this game.');}});
+  // storage events do not fire in the tab that made a change; poll to refresh active host/player views.
+  setInterval(()=>{if(!game||!dialog.open)return;const latest=loadGame();if(!latest||latest.pin!==game.pin)return;if(latest.updatedAt===game.updatedAt)return;const oldStatus=game.status,oldIndex=game.questionIndex;game=latest;if(game.status==='ended'){close();toastMsg('The host ended this game.');}else if(game.status==='playing'&&(oldStatus!=='playing'||oldIndex!==game.questionIndex)){showQuestion();}else if(game.status==='finished'&&oldStatus!=='finished'){showResults();}else if(game.status==='lobby'&&$('#rosterList'))renderLobby();else if(game.status==='playing'&&role==='host'&&$('#answerCount'))$('#answerCount').textContent=`${Object.keys(game.answers[game.questionIndex]||{}).length} / ${game.players.length} players answered`;},800);
+  dialog.addEventListener('close',()=>{});
+  document.addEventListener('click',e=>{if(e.target?.id==='resetLocal'){localStorage.removeItem(STORE);game=null;role=null;close();toastMsg('Local demo game reset.');}});
+})();
