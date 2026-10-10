@@ -310,3 +310,28 @@ textarea.full-input { resize:vertical; min-height:64px; }
 @media (prefers-reduced-motion: reduce) {
  .streak-chip .flame,.streak-chip.streak-active,.streak-chip.streak-active .flame { animation:none!important; }
 }
+
+
+/* Gameplay scene visibility: let the animated forest show through the panels. */
+.app-dialog.game-dialog {
+  background-color: #09031f;
+  background-image: linear-gradient(180deg,rgba(7,2,26,.60),rgba(10,3,31,.66)),url("assets/pixel-night-scene.gif");
+  background-size: cover, cover;
+  background-position: center, center;
+  background-repeat: no-repeat;
+}
+.game-dialog .live-main-panel {
+  background: linear-gradient(145deg,rgba(16,5,47,.76),rgba(9,4,32,.72));
+}
+.game-dialog .pixel-side-card { background:rgba(12,5,39,.82); }
+.game-dialog .live-question.pixel-question { background:rgba(14,6,47,.82); }
+.game-dialog .live-reaction-dock { background:rgba(9,3,29,.78); }
+.streak-chip.streak-bump { animation: streakBurst .58s steps(2,end) 1, streakGlow 1.2s steps(2,end) infinite; }
+.streak-chip.streak-bump .flame { animation: pixelFlameHot .18s steps(2,end) 4 alternate; }
+.streak-chip[data-streak="0"] { opacity:.86; }
+@keyframes streakBurst {
+  0% { transform:scale(1); }
+  35% { transform:scale(1.14) translateY(-2px); }
+  65% { transform:scale(.98); }
+  100% { transform:scale(1); }
+}
