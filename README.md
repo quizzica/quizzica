@@ -1,6 +1,6 @@
 # Quizzica — Main Page Starter
 
-A clean-slate, responsive HTML/CSS/JavaScript starter based on the supplied Quizzica main-page reference.
+A clean-slate, responsive HTML/CSS/JavaScript starter based on the supplied Quizzica main-page reference, with a crisp pixel-art backdrop, animated stars, floating decorative elements, and a glowing lantern.
 
 ## Run locally
 Open `index.html` in a browser. For a local development server, use VS Code Live Server or run:
