@@ -32,13 +32,13 @@ document.getElementById("createButton").addEventListener("click", () => {
   showDialog("Create a Game", "Your quiz creation flow can be connected here. This clean starter is ready for your questions, quiz editor, and live game logic.");
 });
 document.getElementById("settingsButton").addEventListener("click", () => {
-  showDialog("Settings", "Settings for your Quizzica experience will live here.");
+  showDialog("Settings", "Settings for your Samica experience will live here.");
 });
 
 document.querySelectorAll(".top-link, .side-link").forEach((link) => {
   link.addEventListener("click", () => {
     if (link.hash && link.hash !== "#home" && !document.querySelector(link.hash)) {
-      showDialog(link.textContent.trim(), "This page is ready to be added as the next step of your Quizzica website.");
+      showDialog(link.textContent.trim(), "This page is ready to be added as the next step of your Samica website.");
     }
     if (link.classList.contains("top-link")) {
       document.querySelectorAll(".top-link").forEach((item) => item.classList.remove("active"));

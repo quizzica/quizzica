@@ -1,27 +1,18 @@
-# Quizzica — Main Page Starter
+# Samica — Pixel Night Quiz Starter
 
-A clean-slate, responsive HTML/CSS/JavaScript starter based on the supplied Quizzica main-page reference, with a crisp pixel-art backdrop, animated stars, floating decorative elements, and a glowing lantern.
+A responsive retro-pixel quiz homepage with a purple enchanted-forest atmosphere.
 
 ## Run locally
-Open `index.html` in a browser. For a local development server, use VS Code Live Server or run:
 
-```bash
-python -m http.server 8000
-```
+Open `index.html` in a browser. The animated night background and all artwork are stored locally in `assets/`.
 
-Then visit `http://localhost:8000`.
+## Included
 
-## Publish with GitHub Pages
-1. Create a new GitHub repository.
-2. Upload the contents of this folder (not the ZIP itself).
-3. In repository **Settings → Pages**, choose **Deploy from a branch**.
-4. Select `main` and `/ (root)`, then save.
+- Animated pixel-art GIF background, with PNG fallback asset preserved
+- Twinkling stars, drifting pixel leaves, gently swaying branch-like pixel clusters, and glowing fireflies
+- Pixel-style headings, crisp borders, purple controls, and responsive desktop/mobile layout
+- Join PIN form validation and starter dialogs for Create and Settings
 
-## Important functionality note
-The page includes working navigation states, PIN validation, and dialog feedback. Joining a live game and creating/saving quizzes require a backend (for example, Firebase) and are represented as integration points; this starter does not pretend to connect to a live game server.
+## Notes
 
-## Files
-- `index.html` — page structure
-- `styles.css` — visual styling and responsive layout
-- `script.js` — interactions
-- `assets/pixel-night-scene.jpg` — scenery crop derived from the supplied reference image
+The join and create dialogs are frontend placeholders. Connect them to your quiz/game backend to enable real multiplayer sessions and quiz creation. Google Fonts are used when online; system fallbacks keep the page usable offline.

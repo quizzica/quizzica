@@ -4,18 +4,24 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#10052d" />
-  <title>Quizzica — Play, Create, Connect</title>
+  <title>Samica — Quiz · Play · Connect</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
+  <div class="ambient-pixels" aria-hidden="true">
+    <span class="wind-leaf leaf-one">◆</span><span class="wind-leaf leaf-two">◆</span>
+    <span class="wind-leaf leaf-three">◆</span><span class="wind-leaf leaf-four">◆</span>
+    <span class="wind-leaf leaf-five">◆</span><span class="pixel-firefly firefly-one">▪</span>
+    <span class="pixel-firefly firefly-two">▪</span><span class="pixel-firefly firefly-three">▪</span>
+  </div>
   <div class="page-shell">
     <header class="topbar">
-      <a class="brand" href="#" aria-label="Quizzica home">
+      <a class="brand" href="#" aria-label="Samica home">
         <span class="brand-star" aria-hidden="true">✦</span>
-        <span class="brand-name">Quizzica</span>
+        <span class="brand-name">Samica</span>
         <span class="brand-sparkle sparkle-one">✦</span>
         <span class="brand-sparkle sparkle-two">✧</span>
         <span class="brand-tagline">Quiz&nbsp; • &nbsp;Play&nbsp; • &nbsp;Connect</span>
@@ -56,7 +62,7 @@
         </section>
       </section>
 
-      <section class="scenery" aria-label="Quizzica night-time pixel art">
+      <section class="scenery" aria-label="Samica animated pixel-art night scene">
         <div class="scene-overlay"></div><div class="pixel-cloud cloud-one"></div><div class="pixel-cloud cloud-two"></div>
         <div class="floating-star star-a">✦</div>
         <div class="floating-star star-b">✧</div>
@@ -72,7 +78,7 @@
     <button class="dialog-close" id="closeDialog" aria-label="Close">×</button>
     <div class="dialog-icon">✦</div>
     <h2 id="dialogTitle">Coming soon!</h2>
-    <p id="dialogText">This feature is part of your new Quizzica experience.</p>
+    <p id="dialogText">This feature is part of your new Samica experience.</p>
     <button class="button dialog-ok" id="dialogOk">Got it</button>
   </dialog>
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
