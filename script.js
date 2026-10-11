@@ -4,7 +4,7 @@
   const STORE = 'quizzica-live-game-v3';
   const AVATARS = [
     ['', 'Kuro'],['', 'Pinku'],['', 'Jiji'],['', 'Psyche'],['', 'Frog'],['', 'Aqua'],
-    ['', 'Pengu'],['', 'Mimi'],['', 'Micah'],['', 'Mage'],['', 'Wcdo'],['', 'Gahm'],
+    ['', 'Pengu'],['', 'Snow'],['', 'Micah'],['', 'Mage'],['', 'Wcdo'],['', 'Gahm'],
     ['', 'Kim'],['', 'Bunny'],['', 'Rimuru'],['', 'Meleorona'],['', 'Witch'],['', 'Cat Girl']
   ];
   const COLORS = ['#7438e8','#b538d4','#e45d9e','#298bd7','#3bba9b','#e49a38'];
