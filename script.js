@@ -3,9 +3,9 @@
   const dialog = $('#appDialog'), dialogContent = $('#dialogContent'), toast = $('#toast');
   const STORE = 'quizzica-live-game-v3';
   const AVATARS = [
-    ['', 'Micah'],['', 'Wizard'],['', 'Pink Star'],['', 'Elf'],['', 'Ice Mage'],['', 'Cowboy'],
-    ['', 'Fox'],['', 'Bunny'],['', 'Shadow'],['', 'Panda'],['', 'Frog'],['', 'Purple Hair'],
-    ['', 'Blue Hair'],['', 'Explorer'],['', 'Cat Girl'],['', 'Black Cat'],['', 'Penguin'],['', 'Pink Bun']
+    ['', 'Kuro'],['', 'Pinku'],['', 'Jiji'],['', 'Psyche'],['', 'Frog'],['', 'Aqua'],
+    ['', 'Pengu'],['', 'Mimi'],['', 'Demon'],['', 'Mage'],['', 'Wcdo'],['', 'Gahm'],
+    ['', 'Shadow'],['', 'Bunny'],['', 'Rimuru'],['', 'Meleorona'],['', 'Witch'],['', 'Cat Girl']
   ];
   const COLORS = ['#7438e8','#b538d4','#e45d9e','#298bd7','#3bba9b','#e49a38'];
   let game = null, role = null, playerId = null, selectedAvatar = 0, currentProfile = {name:'Player',avatar:0}, syncTimer = null;
